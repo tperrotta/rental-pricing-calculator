@@ -5,193 +5,103 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Rental Pricing Snapshot</title>
 <style>
-  :root {
-    --bg:#0b1020; --card:#141a2e; --muted:#a6b0cf; --text:#e7eaf6; --accent:#7cc4ff; --good:#d1f7c4; --calc:#fff2c2;
-    --border:rgba(255,255,255,.08);
-  }
-  html,body{height:100%}
-  body{
-    margin:0; background:radial-gradient(1200px 600px at 20% -5%, #1b2244 0%, #0b1020 45%, #0b1020 100%), var(--bg);
-    font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
-    color:var(--text); line-height:1.45;
-    display:flex; align-items:center; justify-content:center; padding:24px;
-  }
-  .card{
-    width: min(960px, 100%); background:linear-gradient(180deg, rgba(255,255,255,.02), transparent), var(--card);
-    border:1px solid var(--border); border-radius:18px; box-shadow: 0 10px 30px rgba(0,0,0,.35);
-    padding:24px;
-  }
-  h1{font-size:1.4rem; margin:0 0 6px; letter-spacing:.2px}
-  .sub{color:var(--muted); font-size:.95rem; margin-bottom:20px}
-  .grid{display:grid; grid-template-columns: repeat(12, 1fr); gap:14px}
-  .section{grid-column: span 12; border:1px solid var(--border); border-radius:14px; padding:16px}
-  .section h2{font-size:1.05rem; margin:0 0 10px; color:#dfe5ff}
-  .two-col{display:grid; grid-template-columns: 1fr 1fr; gap:12px}
-  label{font-size:.9rem; color:#cfd7f6}
-  input{
-    width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--border);
-    background:#0f1530; color:var(--text); outline:none;
-  }
-  input:focus{border-color:#365cff; box-shadow:0 0 0 3px rgba(54,92,255,.25)}
-  .tbl{width:100%; border-collapse:collapse; font-size:.95rem}
-  .tbl th,.tbl td{border-bottom:1px solid var(--border); padding:10px 8px; text-align:left}
-  .tbl th{color:#cfd7f6; font-weight:600}
-  .chip{display:inline-block; padding:6px 10px; border-radius:999px; font-size:.85rem; background:#0f1530; border:1px solid var(--border)}
-  .calc{background: #2c2250; border-radius:12px; padding:12px}
-  .calc span{display:inline-block; min-width:130px; color:#bfc7ee}
-  .val{font-weight:700;}
-  .soft{color:var(--muted)}
-  .note{font-size:.9rem; color:#c2c8e6}
-  .row{display:flex; gap:10px; flex-wrap:wrap}
-  .btn{
-    background:#365cff; color:#fff; border:none; border-radius:10px; padding:10px 14px; cursor:pointer; font-weight:600;
-  }
-  .btn.alt{background:#0f1530; border:1px solid var(--border); color:#dfe5ff}
-  .pill{padding:6px 10px; border-radius:999px; background:rgba(255,255,255,.06); font-size:.85rem}
-  .hl{background: linear-gradient(90deg, #ffe99b 0%, #fff3c7 60%); color:#1e2337; padding:2px 8px; border-radius:8px}
-  .good{background: linear-gradient(90deg, #b5efc6 0%, #e8ffe8 60%); color:#102018; padding:2px 8px; border-radius:8px}
-  .foot{color:var(--muted); font-size:.85rem; margin-top:14px}
-  @media (max-width:720px){ .two-col{grid-template-columns:1fr} }
+  body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;margin:20px;max-width:800px}
+  h1{margin:0 0 6px}
+  .box{border:1px solid #ddd;border-radius:8px;padding:16px;margin:14px 0}
+  label{display:block;margin:8px 0 4px}
+  input{padding:8px;border:1px solid #ccc;border-radius:6px;width:200px}
+  table{width:100%;border-collapse:collapse;margin-top:8px}
+  th,td{border-bottom:1px solid #eee;padding:8px;text-align:left}
+  .out{font-weight:700}
+  .row{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+  .pill{background:#f7f7ff;border:1px solid #e6e6ff;border-radius:999px;padding:4px 10px}
 </style>
 </head>
 <body>
-  <main class="card" role="main" aria-labelledby="title">
-    <h1 id="title">Rental Pricing Snapshot</h1>
-    <div class="sub">Fast median $/ft² pricing from three comps, with a rounded suggested rent</div>
+  <h1>Rental Pricing Snapshot</h1>
+  <div class="pill">Fill green cells → results update instantly</div>
 
-    <!-- Subject -->
-    <section class="section" aria-labelledby="subject">
-      <h2 id="subject">Subject</h2>
-      <div class="two-col">
-        <label>Home size, ft²
-          <input id="size" type="number" min="0" step="1" inputmode="numeric" value="1100" aria-describedby="szHelp" />
-        </label>
-        <div class="note" id="szHelp">Enter the subject home’s interior square footage</div>
-      </div>
-    </section>
+  <div class="box">
+    <label for="size">Home size, ft²</label>
+    <input id="size" type="number" min="0" step="1" value="1100" style="background:#eaffea">
+  </div>
 
-    <!-- Comps -->
-    <section class="section" aria-labelledby="comps">
-      <div class="row" style="justify-content:space-between; align-items:center">
-        <h2 id="comps" style="margin:0">Comparable Rentals</h2>
-        <span class="pill">auto-calculates $/ft² and median</span>
-      </div>
-      <table class="tbl" aria-describedby="comphelp">
-        <thead>
-          <tr><th>Comp</th><th>Rent, $/mo</th><th>Size, ft²</th><th>$/ft²</th></tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Comp 1</td>
-            <td><input id="r1" type="number" min="0" step="1" inputmode="numeric" value="1000" /></td>
-            <td><input id="s1" type="number" min="0" step="1" inputmode="numeric" value="800" /></td>
-            <td><span id="pp1" class="val">$1.25</span></td>
-          </tr>
-          <tr>
-            <td>Comp 2</td>
-            <td><input id="r2" type="number" min="0" step="1" inputmode="numeric" value="1200" /></td>
-            <td><input id="s2" type="number" min="0" step="1" inputmode="numeric" value="950" /></td>
-            <td><span id="pp2" class="val">$1.26</span></td>
-          </tr>
-          <tr>
-            <td>Comp 3</td>
-            <td><input id="r3" type="number" min="0" step="1" inputmode="numeric" value="1400" /></td>
-            <td><input id="s3" type="number" min="0" step="1" inputmode="numeric" value="1100" /></td>
-            <td><span id="pp3" class="val">$1.27</span></td>
-          </tr>
-        </tbody>
-      </table>
-      <div id="comphelp" class="foot">Tip, use three recent, similar properties in the same submarket</div>
-    </section>
+  <div class="box">
+    <strong>Comparable Rentals</strong>
+    <table>
+      <thead>
+        <tr><th>Comp</th><th>Rent ($/mo)</th><th>Size (ft²)</th><th>$ / ft²</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Comp 1</td>
+          <td><input id="r1" type="number" min="0" step="1" value="1000" style="background:#eaffea"></td>
+          <td><input id="s1" type="number" min="0" step="1" value="800" style="background:#eaffea"></td>
+          <td class="out" id="pp1">$1.25</td>
+        </tr>
+        <tr>
+          <td>Comp 2</td>
+          <td><input id="r2" type="number" min="0" step="1" value="1200" style="background:#eaffea"></td>
+          <td><input id="s2" type="number" min="0" step="1" value="950" style="background:#eaffea"></td>
+          <td class="out" id="pp2">$1.26</td>
+        </tr>
+        <tr>
+          <td>Comp 3</td>
+          <td><input id="r3" type="number" min="0" step="1" value="1400" style="background:#eaffea"></td>
+          <td><input id="s3" type="number" min="0" step="1" value="1100" style="background:#eaffea"></td>
+          <td class="out" id="pp3">$1.27</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
-    <!-- Results -->
-    <section class="section" aria-labelledby="results">
-      <h2 id="results">Results</h2>
-      <div class="calc" role="group" aria-label="Calculation outputs">
-        <div class="row" style="align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap">
-          <div><span>Median $/ft²</span> <span id="median" class="val hl">$1.26</span></div>
-          <div><span>Suggested price</span> <span id="suggested" class="val hl">$1,389.47</span></div>
-          <div><span>Rounded, nearest $25</span> <span id="rounded" class="val good">$1,400</span></div>
-        </div>
-      </div>
-      <div class="foot">Math, comp $/ft² = rent ÷ size, median of three comps, suggested = subject size × median, rounded = nearest $25</div>
-      <div class="row" style="margin-top:12px">
-        <button class="btn" id="copy">Copy snapshot</button>
-        <button class="btn alt" id="reset">Reset to example</button>
-      </div>
-    </section>
-
-    <div class="foot">This tool is informational, verify with local comps before publishing a price</div>
-  </main>
+  <div class="box">
+    <div class="row"><div>Median $/ft²:</div><div class="out" id="median">$1.26</div></div>
+    <div class="row"><div>Suggested price:</div><div class="out" id="suggested">$1,389.47</div></div>
+    <div class="row"><div>Rounded, nearest $25:</div><div class="out" id="rounded">$1,400</div></div>
+  </div>
 
 <script>
-  const el = id => document.getElementById(id);
-  const fmtMoney = n => isFinite(n) ? n.toLocaleString('en-US',{style:'currency',currency:'USD'}) : '—';
-  const fmtPpsf = n => isFinite(n) ? `$${n.toFixed(2)}` : '—';
+(function(){
+  const $ = id => document.getElementById(id);
+  const money = n => Number.isFinite(n) ? n.toLocaleString('en-US',{style:'currency',currency:'USD'}) : '—';
+  const ppsfFmt = n => Number.isFinite(n) ? '$' + n.toFixed(2) : '—';
 
-  const inputs = ['size','r1','s1','r2','s2','r3','s3'].map(el);
-  const out = { pp1: el('pp1'), pp2: el('pp2'), pp3: el('pp3'),
-                median: el('median'), suggested: el('suggested'), rounded: el('rounded') };
+  const ids = ['size','r1','s1','r2','s2','r3','s3'];
+  ids.forEach(id => $(id).addEventListener('input', calc));
 
-  function median(values){
-    const v = values.filter(x => Number.isFinite(x)).sort((a,b)=>a-b);
-    const n = v.length;
-    if(!n) return NaN;
-    const mid = Math.floor(n/2);
-    return n%2 ? v[mid] : (v[mid-1] + v[mid]) / 2;
+  function median(a){
+    const v = a.filter(Number.isFinite).sort((x,y)=>x-y);
+    if(!v.length) return NaN;
+    const m = Math.floor(v.length/2);
+    return v.length%2 ? v[m] : (v[m-1]+v[m])/2;
   }
 
   function calc(){
-    const size = +el('size').value || 0;
+    const size = +$('size').value || 0;
 
-    const comp = [1,2,3].map(i => {
-      const rent = +el('r'+i).value || 0;
-      const s = +el('s'+i).value || 0;
-      const ppsf = s > 0 ? rent / s : NaN;
-      out['pp'+i].textContent = fmtPpsf(ppsf);
-      return ppsf;
+    const comps = [1,2,3].map(i => {
+      const rent = +$('r'+i).value || 0;
+      const s = +$('s'+i).value || 0;
+      const p = s > 0 ? rent / s : NaN;
+      $('pp'+i).textContent = ppsfFmt(p);
+      return p;
     });
 
-    const med = median(comp);
-    out.median.textContent = fmtPpsf(med);
+    const med = median(comps);
+    $('median').textContent = ppsfFmt(med);
 
-    const suggested = (Number.isFinite(med) && size>0) ? size * med : NaN;
-    out.suggested.textContent = fmtMoney(suggested);
+    const suggested = Number.isFinite(med) && size>0 ? med * size : NaN;
+    $('suggested').textContent = money(suggested);
 
     const rounded = Number.isFinite(suggested) ? Math.round(suggested/25)*25 : NaN;
-    out.rounded.textContent = fmtMoney(rounded);
+    $('rounded').textContent = money(rounded);
   }
 
-  function reset(){
-    el('size').value = 1100;
-    el('r1').value = 1000; el('s1').value = 800;
-    el('r2').value = 1200; el('s2').value = 950;
-    el('r3').value = 1400; el('s3').value = 1100;
-    calc();
-  }
-
-  inputs.forEach(i => i.addEventListener('input', calc));
-  el('reset').addEventListener('click', reset);
-
-  el('copy').addEventListener('click', async () => {
-    const txt =
-`Rental Pricing Snapshot
-Subject size: ${el('size').value} ft²
-Comp $/ft²: ${out.pp1.textContent}, ${out.pp2.textContent}, ${out.pp3.textContent}
-Median $/ft²: ${out.median.textContent}
-Suggested: ${out.suggested.textContent}
-Rounded: ${out.rounded.textContent}`;
-    try{
-      await navigator.clipboard.writeText(txt);
-      el('copy').textContent = 'Copied!';
-      setTimeout(()=>el('copy').textContent='Copy snapshot', 1200);
-    }catch{
-      alert('Copy failed. Select and copy manually:\n\n' + txt);
-    }
-  });
-
-  // initialize
+  // run once on load
   calc();
+})();
 </script>
 </body>
 </html>
+
